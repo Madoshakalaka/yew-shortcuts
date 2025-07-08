@@ -13,7 +13,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-yew-shortcuts = { git = "https://github.com/yourusername/yew-shortcuts" }
+yew-shortcuts = { git = "https://github.com/Madoshakalaka/yew-shortcuts" }
 ```
 
 ## Usage
