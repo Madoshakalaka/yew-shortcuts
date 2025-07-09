@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>yew-shortcuts - FontAwesome Icons for Yew</title>
+<link rel="modulepreload" href="/yew-shortcuts/demo-f8452f86ec500999.js" crossorigin="anonymous" integrity="sha384-UwUo06ht4PIkUpIJVC5WG2iuTg13+caYcLtd4V03rTxqgrRMqXvLIy4zSwze4ZBi"><link rel="preload" href="/yew-shortcuts/demo-f8452f86ec500999_bg.wasm" crossorigin="anonymous" integrity="sha384-yCGCD1xfQajHuptmvvkbd0wPnm/QrhEGca0mmT2jjjSlICaELUqTCb+qq+YhpP9Z" as="fetch" type="application/wasm"></head>
+<body>
+    <noscript>This page contains WebAssembly and JavaScript content, please enable JavaScript in your browser.</noscript>
+
+<script type="module">
+import init, * as bindings from '/yew-shortcuts/demo-f8452f86ec500999.js';
+const wasm = await init({ module_or_path: '/yew-shortcuts/demo-f8452f86ec500999_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>

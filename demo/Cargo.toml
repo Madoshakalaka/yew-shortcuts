@@ -1,0 +1,27 @@
+[package]
+name = "demo"
+version = "0.1.0"
+edition = "2021"
+description = "Demo for yew-shortcuts FontAwesome icons"
+repository = "https://github.com/Madoshakalaka/yew-shortcuts"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+yew = { workspace=true, features = ["csr"] }
+yew-html-ext = { git = "https://github.com/Madoshakalaka/yew-html-ext" }
+yew-shortcuts = { path = "../yew-shortcuts" }
+stylist = { git = "https://github.com/WorldSEnder/stylist.git", branch = "name-lint", features = ["yew_integration", "yew_use_media_query"] }
+yew-autoprops = "0.4.1"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+    "HtmlInputElement",
+    "InputEvent",
+    "Window",
+    "Navigator",
+    "Clipboard",
+]
