@@ -1,16 +1,26 @@
 [workspace]
-members = ["yew-shortcuts-macros", "yew-shortcuts"]
+members = [
+    "demo",
+    "yew-shortcuts",
+    "yew-shortcuts-macros",
+]
 resolver = "2"
 
 [workspace.package]
 version = "0.1.0"
-edition = "2021"
 authors = ["mattsy1999@gmail.com"]
-repository = "https://github.com/Madoshakalaka/yew-shortcuts"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/Madoshakalaka/yew-shortcuts"
+edition = "2021"
 
 [workspace.dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
-syn = { version = "2.0", features = ["full", "extra-traits"] }
 yew = "0.21"
+
+[workspace.dependencies.syn]
+version = "2.0"
+features = [
+    "full",
+    "extra-traits",
+]

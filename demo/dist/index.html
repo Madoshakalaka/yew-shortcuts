@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>yew-shortcuts FontAwesome Demo</title>
+    <meta name="description" content="Demo showcasing FontAwesome icons in yew-shortcuts" />
+<link rel="modulepreload" href="/demo-88c83feb12703180.js" crossorigin="anonymous" integrity="sha384-xOXmEik1K8PCPy0Wx07o3X6Us+8jYcQofNwgcwFJcvrvYL2ZRr8ooqzxshFjNakD"><link rel="preload" href="/demo-88c83feb12703180_bg.wasm" crossorigin="anonymous" integrity="sha384-ZigO0bj+GMjH979i/twGRY6WecgK+n83++PpQs54PLgUT30Hs9HBJnVaC4oNRMGM" as="fetch" type="application/wasm"></head>
+<body>
+    <noscript>This page contains WebAssembly and JavaScript content, please enable JavaScript in your browser.</noscript>
+
+<script type="module">
+import init, * as bindings from '/demo-88c83feb12703180.js';
+const wasm = await init({ module_or_path: '/demo-88c83feb12703180_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
