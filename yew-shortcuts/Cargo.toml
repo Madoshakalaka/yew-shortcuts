@@ -1,0 +1,17 @@
+[package]
+name = "yew-shortcuts"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+description = "Productivity macros and components for Yew applications"
+keywords = ["yew", "macro", "clone", "component", "productivity", "fontawesome"]
+categories = ["web-programming", "development-tools"]
+
+[dependencies]
+yew-shortcuts-macros = { path = "../yew-shortcuts-macros", version = "0.1.0" }
+yew.workspace = true
+
+[features]
+default = []

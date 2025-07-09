@@ -1,0 +1,16 @@
+[package]
+name = "yew-shortcuts-macros"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+description = "Procedural macros for yew-shortcuts"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2.workspace = true
+quote.workspace = true
+syn.workspace = true

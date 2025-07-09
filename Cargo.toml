@@ -1,18 +1,16 @@
-[package]
-name = "yew-shortcuts"
+[workspace]
+members = ["yew-shortcuts-macros", "yew-shortcuts"]
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 authors = ["mattsy1999@gmail.com"]
-description = "Productivity macros for Yew applications - includes cs! for cloning and comp attribute for components"
 repository = "https://github.com/Madoshakalaka/yew-shortcuts"
 license = "MIT OR Apache-2.0"
-keywords = ["yew", "macro", "clone", "component", "productivity"]
-categories = ["web-programming", "development-tools::procedural-macro-helpers"]
 
-[lib]
-proc-macro = true
-
-[dependencies]
+[workspace.dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "2.0", features = ["full", "extra-traits"] }
+yew = "0.21"
