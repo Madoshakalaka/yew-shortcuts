@@ -71,7 +71,7 @@ pub fn FontAwesomeSvg(props: &FontAwesomeSvgProps) -> Html {
             viewBox={props.icon.view_box}
             onclick={props.onclick.clone()}
         >
-            <path fill="currentColor" d={props.icon.d} />
+            <path fill="currentColor" d={props.icon.d} onclick={props.onclick.clone()} />
         </svg>
     }
 }
