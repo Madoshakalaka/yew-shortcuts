@@ -6,7 +6,7 @@ edition = "2024"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 yew = {workspace = true, features = ["csr"]}
-yew-shortcuts = { path = "../yew-shortcuts" }
+yew-shortcuts = { path = "../yew-shortcuts", features = ["full-svg"] }
 yew-html-ext = {git = "https://github.com/Madoshakalaka/yew-html-ext" }
 js-sys = "0.3.66"
 web-sys = { version = "0.3", features = ["HtmlInputElement", "Window", "Navigator", "Clipboard"] }

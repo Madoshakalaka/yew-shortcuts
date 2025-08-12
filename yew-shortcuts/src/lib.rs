@@ -7,3 +7,9 @@ pub use yew_shortcuts_macros::{cs, comp};
 
 // FontAwesome module
 pub mod fontawesome;
+
+// Component module
+mod component;
+
+// Re-export FontAwesomeSvg component
+pub use component::FontAwesomeSvg;

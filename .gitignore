@@ -1,3 +1,9 @@
 /target
 **/*.rs.bk
 /src/fontawesome-free-6.7.2-web/
+
+# FontAwesome 7.0 SVG source files (large)
+/svgs-full-7/
+
+# Generated icon list documentation (can be regenerated)
+/ICONS.md

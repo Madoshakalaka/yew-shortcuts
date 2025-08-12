@@ -8,7 +8,7 @@ Productivity macros for Yew applications. Stop typing the same boilerplate over 
 
 - `cs!` - Clone multiple variables at once for closures
 - `#[comp]` - Combines `#[yew_autoprops::autoprops]` and `#[yew::function_component]`
-- **FontAwesome Icons** - 2,060+ compile-time SVG icons with zero runtime overhead!
+- **FontAwesome Icons** - 2806 compile-time SVG icons with zero runtime overhead!
 
 ## Installation
 
@@ -86,5 +86,6 @@ Licensed under either of
  * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
  * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
-
 at your option.
+
+FontAwesome comes with a very permissive license that allows them to use it in commercial applications as long an attribution in the svg data is preserved. This crate does it by preserving the attribution in the `data-fa-license` attribute of the svg element.

@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "demo",
+    "demo", "icon-processor",
     "yew-shortcuts",
     "yew-shortcuts-macros",
 ]

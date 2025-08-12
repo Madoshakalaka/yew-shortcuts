@@ -1,7 +1,13 @@
+use crate::all_icons::{BRANDS_ICONS, REGULAR_ICONS, SOLID_ICONS};
 use stylist::{css, yew::Global};
 use yew::prelude::*;
-use yew_shortcuts::fontawesome::{self, FontAwesomeSvg, icons};
-use crate::all_icons::{SOLID_ICONS, REGULAR_ICONS, BRANDS_ICONS};
+use yew_shortcuts::{
+    FontAwesomeSvg,
+    fontawesome::{self, icons},
+};
+
+// Include the generated icon counts
+include!(concat!(env!("OUT_DIR"), "/icon_counts.rs"));
 
 const ICONS_PER_PAGE: usize = 100;
 
@@ -20,7 +26,7 @@ impl IconCategory {
             IconCategory::Brands => "Brands",
         }
     }
-    
+
     fn icons(&self) -> &'static [(&'static str, &'static fontawesome::Icon)] {
         match self {
             IconCategory::Solid => SOLID_ICONS,
@@ -28,7 +34,7 @@ impl IconCategory {
             IconCategory::Brands => BRANDS_ICONS,
         }
     }
-    
+
     fn count(&self) -> usize {
         self.icons().len()
     }
@@ -37,9 +43,10 @@ impl IconCategory {
 #[function_component]
 pub fn App() -> Html {
     let search_query = use_state(String::new);
-    let copied_icon = use_state(|| None::<String>);
+    let copied_icon = use_state(|| None::<(String, bool)>);
     let current_category = use_state(|| IconCategory::Solid);
     let current_page = use_state(|| 0usize);
+    let use_full = use_state(|| true);
 
     let on_search_input = {
         let search_query = search_query.clone();
@@ -53,15 +60,16 @@ pub fn App() -> Html {
 
     let copy_to_clipboard = {
         let copied_icon = copied_icon.clone();
+        let use_full = use_full.clone();
         Callback::from(move |(icon_name, code): (String, String)| {
             let window = web_sys::window().unwrap();
             let navigator = window.navigator();
             let clipboard = navigator.clipboard();
-            
+
             let promise = clipboard.write_text(&code);
-            
-            copied_icon.set(Some(icon_name));
-            
+
+            copied_icon.set(Some((icon_name, *use_full)));
+
             let copied_icon = copied_icon.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let _ = wasm_bindgen_futures::JsFuture::from(promise).await;
@@ -72,7 +80,7 @@ pub fn App() -> Html {
     };
 
     let query = search_query.to_lowercase();
-    
+
     // Filter icons based on search
     let filtered_icons: Vec<(&str, &fontawesome::Icon)> = current_category
         .icons()
@@ -80,10 +88,10 @@ pub fn App() -> Html {
         .filter(|(name, _)| query.is_empty() || name.to_lowercase().contains(&query))
         .cloned()
         .collect();
-    
+
     let total_pages = (filtered_icons.len() + ICONS_PER_PAGE - 1) / ICONS_PER_PAGE;
     let current_page_num = *current_page;
-    
+
     // Get icons for current page
     let start_idx = current_page_num * ICONS_PER_PAGE;
     let end_idx = (start_idx + ICONS_PER_PAGE).min(filtered_icons.len());
@@ -197,11 +205,45 @@ pub fn App() -> Html {
                     margin-bottom: 2rem;
                 }
                 
+                .category-controls {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 2rem;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+                }
+                
                 .category-tabs {
                     display: flex;
                     gap: 1rem;
-                    margin-bottom: 2rem;
-                    flex-wrap: wrap;
+                }
+                
+                .svg-mode-toggle {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                
+                .toggle-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                }
+                
+                .toggle-label input[type="checkbox"] {
+                    cursor: pointer;
+                }
+                
+                .toggle-text {
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+                
+                .toggle-description {
+                    font-size: 0.85rem;
+                    color: #6b7280;
                 }
                 
                 .category-tab {
@@ -404,7 +446,7 @@ pub fn App() -> Html {
                 }
                 "#
             )} />
-            
+
             <header class="header">
                 <h1>{"yew-shortcuts FontAwesome Icons"}</h1>
                 <p>{"Compile-time SVG icons for Yew - Zero runtime overhead!"}</p>
@@ -412,58 +454,78 @@ pub fn App() -> Html {
                     <a href="https://github.com/Madoshakalaka/yew-shortcuts" target="_blank">{"View on GitHub"}</a>
                 </p>
             </header>
-            
+
             <div class="info-cards">
                 <div class="info-card">
-                    <h3>{"🚀 Zero Overhead"}</h3>
-                    <p>{"All icons are compile-time constants"}</p>
+                    <h3>{"📦 Tree-Shaking"}</h3>
+                    <p>{"Dead code elimination removes unused icons"}</p>
                 </div>
                 <div class="info-card">
-                    <h3>{"📦 No WASM Bloat"}</h3>
-                    <p>{"Only used icons are included"}</p>
+                    <h3>{format!("⚡ {} Icons", TOTAL_ICONS)}</h3>
+                    <p>{"FontAwesome 7.0 collection"}</p>
                 </div>
                 <div class="info-card">
-                    <h3>{"⚡ 2,060 Icons"}</h3>
-                    <p>{"Available at compile time"}</p>
+                    <h3>{"🎯 Zero Runtime"}</h3>
+                    <p>{"SVG paths baked into WASM"}</p>
                 </div>
             </div>
-            
+
             <div class="container">
                 <div class="how-it-works">
                     <h2>{"How it works"}</h2>
                     <p>{"Each icon is defined as a "}<code>{"const"}</code>{" with its SVG path data:"}</p>
-                    <pre>
-{r#"pub const HOUSE: &Icon = &Icon {
-    view_box: "0 0 576 512",
-    d: "M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c..."
-};"#}
-                    </pre>
+                    <pre>{format!("pub const HOUSE: &Icon = &Icon {{\n    cropped: CroppedIcon {{ view_box: \"...\", d: r#\"{}...\"# }},\n    #[cfg(feature = \"full-svg\")]\n    full: FullIcon {{ d: r#\"...\"# }},\n}};",
+                        &icons::solid::HOUSE.cropped.d[..100.min(icons::solid::HOUSE.cropped.d.len())] // Show first 100 chars of path with ellipsis
+                    )}</pre>
                     <p>{"The Rust compiler's dead code elimination ensures that "}<strong>{"only the icons you import and use"}</strong>{" are included in the final WASM binary. Unused icons are completely eliminated at compile time!"}</p>
                 </div>
-                
+
                 <div class="controls">
-                    <div class="category-tabs">
-                        {[IconCategory::Solid, IconCategory::Regular, IconCategory::Brands].into_iter().map(|category| {
-                            let is_active = *current_category == category;
-                            let onclick = {
-                                let on_category_change = on_category_change.clone();
-                                Callback::from(move |_| on_category_change.emit(category))
-                            };
-                            
-                            html! {
-                                <button
-                                    class={classes!("category-tab", is_active.then(|| "active"))}
-                                    {onclick}
-                                >
-                                    {format!("{} ({})", category.name(), category.count())}
-                                </button>
-                            }
-                        }).collect::<Html>()}
+                    <div class="category-controls">
+                        <div class="category-tabs">
+                            {[IconCategory::Solid, IconCategory::Regular, IconCategory::Brands].into_iter().map(|category| {
+                                let is_active = *current_category == category;
+                                let onclick = {
+                                    let on_category_change = on_category_change.clone();
+                                    Callback::from(move |_| on_category_change.emit(category))
+                                };
+
+                                html! {
+                                    <button
+                                        class={classes!("category-tab", is_active.then(|| "active"))}
+                                        {onclick}
+                                    >
+                                        {format!("{} ({})", category.name(), category.count())}
+                                    </button>
+                                }
+                            }).collect::<Html>()}
+                        </div>
+
+                        <div class="svg-mode-toggle">
+                            <label class="toggle-label">
+                                <input
+                                    type="checkbox"
+                                    checked={*use_full}
+                                    onchange={Callback::from({
+                                        let use_full = use_full.clone();
+                                        move |_| use_full.set(!*use_full)
+                                    })}
+                                />
+                                <span class="toggle-text">{"Full SVG"}</span>
+                            </label>
+                            <span class="toggle-description">
+                                {if *use_full {
+                                    "640×640 viewBox with padding"
+                                } else {
+                                    "Tight viewBox to content"
+                                }}
+                            </span>
+                        </div>
                     </div>
-                    
+
                     <div class="search-container">
-                        <FontAwesomeSvg 
-                            icon={&icons::solid::MAGNIFYING_GLASS} 
+                        <FontAwesomeSvg
+                            icon={&icons::solid::MAGNIFYING_GLASS}
                             classes={classes!("search-icon")}
                         />
                         <input
@@ -474,7 +536,7 @@ pub fn App() -> Html {
                             oninput={on_search_input}
                         />
                     </div>
-                    
+
                     <div class="results-info">
                         {if !query.is_empty() {
                             html! {
@@ -482,24 +544,32 @@ pub fn App() -> Html {
                             }
                         } else {
                             html! {
-                                <p>{format!("Showing {} of {} icons", 
-                                    page_icons.len(), 
+                                <p>{format!("Showing {} of {} icons",
+                                    page_icons.len(),
                                     filtered_icons.len()
                                 )}</p>
                             }
                         }}
                     </div>
                 </div>
-                
+
                 <div class="icon-grid">
                     {page_icons.iter().map(|(name, icon)| {
                         let full_icon_name = format!("{}::{}", current_category.name().to_lowercase(), name);
-                        let code = format!("use yew_shortcuts::fontawesome::icons::{};\n\n<FontAwesomeSvg icon={{&icons::{}::{}}} />", 
-                            current_category.name().to_lowercase(), 
-                            current_category.name().to_lowercase(), 
-                            name
-                        );
-                        
+                        let code = if *use_full {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::{}}};\n\n<FontAwesomeSvg icon={{&icons::{}::{}}} full=true />",
+                                current_category.name().to_lowercase(),
+                                current_category.name().to_lowercase(),
+                                name
+                            )
+                        } else {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::{}}};\n\n<FontAwesomeSvg icon={{&icons::{}::{}}} />",
+                                current_category.name().to_lowercase(),
+                                current_category.name().to_lowercase(),
+                                name
+                            )
+                        };
+
                         let onclick = {
                             let full_icon_name = full_icon_name.clone();
                             let code = code.clone();
@@ -509,34 +579,43 @@ pub fn App() -> Html {
                                 copy_to_clipboard.emit((full_icon_name.clone(), code.clone()))
                             })
                         };
-                        
-                        
+
+
                         html! {
                             <div class="icon-card" onclick={onclick.clone()} title={format!("Click to copy {}", name)}>
-                                <FontAwesomeSvg icon={icon} style="font-size: 2rem;" onclick={onclick.clone()} />
+                                <FontAwesomeSvg icon={icon} full={*use_full} style="font-size: 2rem;" onclick={onclick.clone()} />
                                 <div class="icon-name" onclick={onclick}>{name}</div>
                             </div>
                         }
                     }).collect::<Html>()}
                 </div>
-                
-                {if let Some(copied_name) = &*copied_icon {
+
+                {if let Some((copied_name, is_full)) = &*copied_icon {
                     let code = if copied_name.starts_with("solid::") {
-                        format!("use yew_shortcuts::fontawesome::icons::solid;\n\n<FontAwesomeSvg icon={{&solid::{}}} />", 
-                            copied_name.strip_prefix("solid::").unwrap()
-                        )
+                        let icon_name = copied_name.strip_prefix("solid::").unwrap();
+                        if *is_full {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::solid}};\n\n<FontAwesomeSvg icon={{&solid::{}}} full=true />", icon_name)
+                        } else {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::solid}};\n\n<FontAwesomeSvg icon={{&solid::{}}} />", icon_name)
+                        }
                     } else if copied_name.starts_with("regular::") {
-                        format!("use yew_shortcuts::fontawesome::icons::regular;\n\n<FontAwesomeSvg icon={{&regular::{}}} />", 
-                            copied_name.strip_prefix("regular::").unwrap()
-                        )
+                        let icon_name = copied_name.strip_prefix("regular::").unwrap();
+                        if *is_full {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::regular}};\n\n<FontAwesomeSvg icon={{&regular::{}}} full=true />", icon_name)
+                        } else {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::regular}};\n\n<FontAwesomeSvg icon={{&regular::{}}} />", icon_name)
+                        }
                     } else if copied_name.starts_with("brands::") {
-                        format!("use yew_shortcuts::fontawesome::icons::brands;\n\n<FontAwesomeSvg icon={{&brands::{}}} />", 
-                            copied_name.strip_prefix("brands::").unwrap()
-                        )
+                        let icon_name = copied_name.strip_prefix("brands::").unwrap();
+                        if *is_full {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::brands}};\n\n<FontAwesomeSvg icon={{&brands::{}}} full=true />", icon_name)
+                        } else {
+                            format!("use yew_shortcuts::{{FontAwesomeSvg, fontawesome::icons::brands}};\n\n<FontAwesomeSvg icon={{&brands::{}}} />", icon_name)
+                        }
                     } else {
                         String::new()
                     };
-                    
+
                     html! {
                         <div class="copied-badge">
                             <div>{"✓ Copied to clipboard!"}</div>
@@ -546,11 +625,11 @@ pub fn App() -> Html {
                 } else {
                     html! {}
                 }}
-                
+
                 {if total_pages > 1 {
                     html! {
                         <div class="pagination">
-                            <button 
+                            <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
                                     Callback::from(move |_| on_page_change.emit(0))
@@ -559,7 +638,7 @@ pub fn App() -> Html {
                             >
                                 {"First"}
                             </button>
-                            <button 
+                            <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
                                     Callback::from(move |_| {
@@ -572,12 +651,12 @@ pub fn App() -> Html {
                             >
                                 {"Previous"}
                             </button>
-                            
+
                             <span class="page-info">
                                 {format!("Page {} of {}", current_page_num + 1, total_pages)}
                             </span>
-                            
-                            <button 
+
+                            <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
                                     let total_pages = total_pages;
@@ -591,7 +670,7 @@ pub fn App() -> Html {
                             >
                                 {"Next"}
                             </button>
-                            <button 
+                            <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
                                     let total_pages = total_pages;
