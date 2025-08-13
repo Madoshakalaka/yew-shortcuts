@@ -23,12 +23,12 @@ yew-shortcuts = { git = "https://github.com/Madoshakalaka/yew-shortcuts" }
 
 ### FontAwesome Icons
 
-yew-shortcuts includes all 2,806 FontAwesome Free 7.0 icons as compile-time constants. **Only the icons you actually use are included in your final WASM binary** - unused icons are eliminated by the Rust compiler's dead code elimination.
+yew-shortcuts includes all 2,806 FontAwesome Free 7.0 icons as compile-time constants. Only the icons you actually use are included in your final WASM binary - unused icons are eliminated by the Rust compiler's dead code elimination.
 
 ```rust
 use yew_shortcuts::fontawesome::{icons, FontAwesomeSvg};
 
-// Only this icon will be included in your final binary!
+// Only this icon will be included in your final binary
 html! {
     <FontAwesomeSvg icon={&icons::solid::HOUSE} />
 }
@@ -91,7 +91,7 @@ search for house related yew-shortcuts icons
 the mcp will return the component props and svg viewbox to the agent so you can prompt with:
 
 ```
-use the regular house icon and style it with rem, proportially to the viewbox
+use the regular house icon and style it with rem proportially to the viewbox
 ```
 
 ### The `cs!` macro
