@@ -3,6 +3,7 @@ members = [
     "demo", "icon-processor",
     "yew-shortcuts",
     "yew-shortcuts-macros",
+    "mcp-icon-server",
 ]
 resolver = "2"
 

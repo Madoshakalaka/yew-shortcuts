@@ -1,0 +1,21 @@
+[package]
+name = "mcp-icon-server"
+version = "0.1.0"
+edition = "2021"
+authors = ["mattsy1999@gmail.com"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Madoshakalaka/yew-shortcuts"
+
+[dependencies]
+rmcp = { version = "0.5.0", features = ["server", "transport-io"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+fuzzy-matcher = "0.3"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1.0"
+
+# For parsing the icon data
+regex = "1.10"
+once_cell = "1.19"
