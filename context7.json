@@ -1,0 +1,11 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "yew-shortcuts",
+  "description": "Productivity macros and FontAwesome icons for Yew applications",
+  "folders": [],
+  "excludeFolders": [
+    "demo",
+    "icon-processor"
+  ],
+  "excludeFiles": []
+}

@@ -120,6 +120,55 @@ fn process_icons_directory(dir: &Path) -> (Vec<IconData>, String) {
     (icons, license)
 }
 
+fn extract_dimensions(view_box: &str) -> (u32, u32) {
+    // viewBox format is "x y width height"
+    let parts: Vec<&str> = view_box.split_whitespace().collect();
+    if parts.len() == 4 {
+        let width = parts[2].parse().unwrap_or(0);
+        let height = parts[3].parse().unwrap_or(0);
+        (width, height)
+    } else {
+        (0, 0)
+    }
+}
+
+fn generate_icons_markdown(cropped_icons: &[IconData]) -> String {
+    let mut output = String::new();
+    
+    // Add header
+    output.push_str("# FontAwesome 7.0 Icons\n\n");
+    output.push_str(&format!("Total icons: {}\n\n", cropped_icons.len()));
+    
+    // Group icons by category
+    let mut by_category: BTreeMap<String, Vec<&IconData>> = BTreeMap::new();
+    for icon in cropped_icons {
+        by_category.entry(icon.category.clone()).or_default().push(icon);
+    }
+    
+    // Generate markdown for each category
+    for (category, icons) in &by_category {
+        output.push_str(&format!("## {} ({} icons)\n\n", category, icons.len()));
+        
+        // Sort icons by name for consistent output
+        let mut sorted_icons = icons.clone();
+        sorted_icons.sort_by_key(|i| &i.name);
+        
+        for icon in sorted_icons {
+            let (width, height) = extract_dimensions(&icon.view_box);
+            output.push_str(&format!(
+                "- `icons::{}::{}` {}x{}\n",
+                category,
+                icon.name,
+                width,
+                height
+            ));
+        }
+        output.push_str("\n");
+    }
+    
+    output
+}
+
 fn generate_rust_module(
     cropped_icons: &[IconData],
     full_icons: &[IconData],
@@ -244,6 +293,7 @@ fn main() {
     let cropped_dir = Path::new("../svgs-7");
     let full_dir = Path::new("../svgs-full-7");
     let output_path = Path::new("../yew-shortcuts/src/fontawesome.rs");
+    let markdown_path = Path::new("../ICONS.md");
     
     // Process cropped icons
     println!("Processing cropped icons from {}...", cropped_dir.display());
@@ -280,10 +330,21 @@ fn main() {
     println!("\nGenerating Rust module...");
     let rust_code = generate_rust_module(&cropped_icons, &full_icons, &license);
     
-    // Write to file
+    // Write Rust module to file
     let mut file = fs::File::create(output_path).expect("Failed to create output file");
     file.write_all(rust_code.as_bytes())
         .expect("Failed to write to output file");
     
     println!("Successfully generated {}", output_path.display());
+    
+    // Generate markdown documentation
+    println!("\nGenerating markdown documentation...");
+    let markdown = generate_icons_markdown(&cropped_icons);
+    
+    // Write markdown to file
+    let mut md_file = fs::File::create(markdown_path).expect("Failed to create markdown file");
+    md_file.write_all(markdown.as_bytes())
+        .expect("Failed to write to markdown file");
+    
+    println!("Successfully generated {}", markdown_path.display());
 }

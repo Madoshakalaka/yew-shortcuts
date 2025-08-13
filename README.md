@@ -60,7 +60,7 @@ fn MyComponent(name: &str) -> Html {
 
 ### FontAwesome Icons
 
-yew-shortcuts includes all 2,060 FontAwesome Free icons as compile-time constants. **Only the icons you actually use are included in your final WASM binary** - unused icons are eliminated by the Rust compiler's dead code elimination.
+yew-shortcuts includes all 2,806 FontAwesome Free 7.0 icons as compile-time constants. **Only the icons you actually use are included in your final WASM binary** - unused icons are eliminated by the Rust compiler's dead code elimination.
 
 ```rust
 use yew_shortcuts::fontawesome::{icons, FontAwesomeSvg};
@@ -71,13 +71,29 @@ html! {
 }
 ```
 
-Features:
-- 🚀 **Zero runtime overhead** - All icons are `const` definitions
-- 📦 **No WASM bloat** - Dead code elimination removes unused icons
-- 🎨 **Full styling support** - Use classes, inline styles, click handlers, etc.
-- 📁 **Well organized** - Icons are categorized into `solid`, `regular`, and `brands` modules
+#### Cropped vs Full SVG Modes
 
-Check out the [live demo](https://madoshakalaka.github.io/yew-shortcuts/) to browse all available icons!
+Icons support two rendering modes:
+
+- **Cropped (default)** - Tight viewBox that fits exactly to the icon content.
+- **Full** - Standard 640×640 viewBox with padding. Useful when you need consistent icon boundaries.
+
+To use full SVG mode, enable the feature and use the `full` prop:
+
+```toml
+# Cargo.toml
+[dependencies]
+yew-shortcuts = { git = "https://github.com/Madoshakalaka/yew-shortcuts", features = ["full-svg"] }
+```
+
+```rust
+// Use full 640×640 viewBox
+html! {
+    <FontAwesomeSvg icon={&icons::solid::HOUSE} full=true />
+}
+```
+
+Use the [live demo](https://madoshakalaka.github.io/yew-shortcuts/) to browse and search for all available icons!
 
 ## License
 

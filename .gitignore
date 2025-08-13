@@ -4,6 +4,4 @@
 
 # FontAwesome 7.0 SVG source files (large)
 /svgs-full-7/
-
-# Generated icon list documentation (can be regenerated)
-/ICONS.md
+/svgs-7/
