@@ -3,7 +3,6 @@ name = "demo"
 version = "0.1.0"
 edition = "2024"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 yew = {workspace = true, features = ["csr"]}
 yew-shortcuts = { path = "../yew-shortcuts", features = ["full-svg"] }
@@ -13,5 +12,6 @@ web-sys = { version = "0.3", features = ["HtmlInputElement", "Window", "Navigato
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 gloo = { version = "0.11", features = ["timers", "futures"] }
-stylist = { git = "https://github.com/WorldSEnder/stylist.git", branch="name-lint", features = ["yew_integration", "yew_use_media_query"] }
+stylist = { git = "https://github.com/Madoshakalaka/stylist-rs.git", features = ["yew_integration", "yew_use_media_query"] }
+# stylist = { path = "../../stylist-rs/packages/stylist", features = ["yew_integration", "yew_use_media_query"] }
 

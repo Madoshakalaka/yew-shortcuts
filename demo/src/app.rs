@@ -584,7 +584,7 @@ pub fn App() -> Html {
                         html! {
                             <div class="icon-card" onclick={onclick.clone()} title={format!("Click to copy {}", name)}>
                                 <FontAwesomeSvg icon={icon} full={*use_full} style="font-size: 2rem;" onclick={onclick.clone()} />
-                                <div class="icon-name" onclick={onclick}>{name}</div>
+                                <div class="icon-name" onclick={onclick}>{*name}</div>
                             </div>
                         }
                     }).collect::<Html>()}
