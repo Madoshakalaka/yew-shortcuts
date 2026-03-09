@@ -5,8 +5,6 @@ use rmcp::{
     service::RequestContext,
 };
 use serde_json::{json, Map, Value};
-use std::borrow::Cow;
-use std::sync::Arc;
 
 use crate::icon_index::IconIndex;
 use crate::tools;
@@ -26,24 +24,19 @@ impl IconServer {
 
 impl ServerHandler for IconServer {
     fn get_info(&self) -> ServerInfo {
-        ServerInfo {
-            protocol_version: ProtocolVersion::V_2024_11_05,
-            capabilities: ServerCapabilities::builder()
-                .enable_tools()
-                .build(),
-            server_info: Implementation::from_build_env(),
-            instructions: Some(
+        ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
+            .with_protocol_version(ProtocolVersion::V_2024_11_05)
+            .with_server_info(Implementation::from_build_env())
+            .with_instructions(
                 "This server provides FontAwesome icon search and code generation for yew-shortcuts. \
                 Use 'search_icons' to find icons, 'get_icon_code' to generate Yew component code, \
                 'get_icon_details' for detailed icon information, and 'list_categories' to see available categories."
-                .to_string()
-            ),
-        }
+            )
     }
 
     async fn list_tools(
         &self,
-        _request: Option<PaginatedRequestParam>,
+        _request: Option<PaginatedRequestParams>,
         _context: RequestContext<RoleServer>,
     ) -> Result<ListToolsResult, McpError> {
         let mut search_schema = Map::new();
@@ -95,44 +88,17 @@ impl ServerHandler for IconServer {
         categories_schema.insert("type".to_string(), json!("object"));
         categories_schema.insert("properties".to_string(), json!({}));
 
-        Ok(ListToolsResult {
-            tools: vec![
-                Tool {
-                    name: Cow::Borrowed("search_icons"),
-                    description: Some(Cow::Borrowed("Search for FontAwesome icons by name or keyword")),
-                    input_schema: Arc::new(search_schema),
-                    output_schema: None,
-                    annotations: None,
-                },
-                Tool {
-                    name: Cow::Borrowed("get_icon_code"),
-                    description: Some(Cow::Borrowed("Get Yew component code for a specific icon")),
-                    input_schema: Arc::new(code_schema),
-                    output_schema: None,
-                    annotations: None,
-                },
-                Tool {
-                    name: Cow::Borrowed("get_icon_details"),
-                    description: Some(Cow::Borrowed("Get detailed information about a specific icon")),
-                    input_schema: Arc::new(details_schema),
-                    output_schema: None,
-                    annotations: None,
-                },
-                Tool {
-                    name: Cow::Borrowed("list_categories"),
-                    description: Some(Cow::Borrowed("List all available icon categories with counts")),
-                    input_schema: Arc::new(categories_schema),
-                    output_schema: None,
-                    annotations: None,
-                },
-            ],
-            next_cursor: None,
-        })
+        Ok(ListToolsResult::with_all_items(vec![
+            Tool::new("search_icons", "Search for FontAwesome icons by name or keyword", search_schema),
+            Tool::new("get_icon_code", "Get Yew component code for a specific icon", code_schema),
+            Tool::new("get_icon_details", "Get detailed information about a specific icon", details_schema),
+            Tool::new("list_categories", "List all available icon categories with counts", categories_schema),
+        ]))
     }
 
     async fn call_tool(
         &self,
-        CallToolRequestParam { name, arguments }: CallToolRequestParam,
+        CallToolRequestParams { name, arguments, .. }: CallToolRequestParams,
         _context: RequestContext<RoleServer>,
     ) -> Result<CallToolResult, McpError> {
         // Convert Option<Map> to Value for deserialization

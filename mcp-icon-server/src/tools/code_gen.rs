@@ -72,6 +72,34 @@ html! {{
             default_value: Some("None".to_string()),
             description: "Click event handler".to_string(),
         },
+        PropInfo {
+            name: "x".to_string(),
+            prop_type: "Option<AttrValue>".to_string(),
+            required: false,
+            default_value: Some("None".to_string()),
+            description: "SVG x attribute for positioning when nested inside another SVG".to_string(),
+        },
+        PropInfo {
+            name: "y".to_string(),
+            prop_type: "Option<AttrValue>".to_string(),
+            required: false,
+            default_value: Some("None".to_string()),
+            description: "SVG y attribute for positioning when nested inside another SVG".to_string(),
+        },
+        PropInfo {
+            name: "width".to_string(),
+            prop_type: "Option<AttrValue>".to_string(),
+            required: false,
+            default_value: Some("None".to_string()),
+            description: "SVG width attribute for sizing when nested inside another SVG".to_string(),
+        },
+        PropInfo {
+            name: "height".to_string(),
+            prop_type: "Option<AttrValue>".to_string(),
+            required: false,
+            default_value: Some("None".to_string()),
+            description: "SVG height attribute for sizing when nested inside another SVG".to_string(),
+        },
     ];
 
     Ok(GetIconCodeResult {
