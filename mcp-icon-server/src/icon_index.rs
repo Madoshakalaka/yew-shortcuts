@@ -57,20 +57,24 @@ fn parse_with_state_machine() -> Result<Vec<IconInfo>> {
     let mut i = 0;
     let mut current_module = String::new();
 
+    let mod_re = Regex::new(r"pub mod (\w+)")?;
+    let const_re = Regex::new(r"pub const (\w+):")?;
+    let view_box_re = Regex::new(r#"view_box: "([^"]+)""#)?;
+
     while i < lines.len() {
         let line = lines[i];
 
         // Check for module declaration
         if line.contains("pub mod") && line.contains("{") {
-            if let Some(caps) = Regex::new(r"pub mod (\w+)")?.captures(line) {
+            if let Some(caps) = mod_re.captures(line) {
                 current_module = caps[1].to_string();
             }
         }
 
-        // Check for icon constant  
+        // Check for icon constant
         if line.contains("pub const") && line.contains(": &Icon") && !current_module.is_empty() {
             // Extract icon name
-            let icon_name = if let Some(caps) = Regex::new(r"pub const (\w+):")?.captures(line) {
+            let icon_name = if let Some(caps) = const_re.captures(line) {
                 caps[1].to_string()
             } else {
                 i += 1;
@@ -80,10 +84,10 @@ fn parse_with_state_machine() -> Result<Vec<IconInfo>> {
             // Look for viewBox in next few lines
             let mut view_box = String::new();
             let mut path_data = String::new();
-            
+
             for j in i..std::cmp::min(i + 20, lines.len()) {
                 if lines[j].contains("view_box:") {
-                    if let Some(caps) = Regex::new(r#"view_box: "([^"]+)""#)?.captures(lines[j]) {
+                    if let Some(caps) = view_box_re.captures(lines[j]) {
                         view_box = caps[1].to_string();
                     }
                 }
@@ -98,13 +102,13 @@ fn parse_with_state_machine() -> Result<Vec<IconInfo>> {
                         } else {
                             // Multi-line path data
                             let mut path_parts = vec![start_line];
-                            for k in (j + 1)..std::cmp::min(j + 10, lines.len()) {
-                                if let Some(end_idx) = lines[k].find("\"#") {
-                                    path_parts.push(&lines[k][..end_idx]);
+                            for line in lines.iter().take(std::cmp::min(j + 10, lines.len())).skip(j + 1) {
+                                if let Some(end_idx) = line.find("\"#") {
+                                    path_parts.push(&line[..end_idx]);
                                     path_data = path_parts.join("");
                                     break;
                                 } else {
-                                    path_parts.push(lines[k].trim());
+                                    path_parts.push(line.trim());
                                 }
                             }
                         }

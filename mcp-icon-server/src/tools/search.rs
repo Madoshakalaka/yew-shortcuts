@@ -37,7 +37,7 @@ pub fn search_icons(index: &IconIndex, params: SearchIconsParams) -> Result<Sear
         .collect();
 
     // Sort by score (highest first)
-    scored_icons.sort_by(|a, b| b.0.cmp(&a.0));
+    scored_icons.sort_by_key(|b| std::cmp::Reverse(b.0));
 
     let total_matches = scored_icons.len();
     

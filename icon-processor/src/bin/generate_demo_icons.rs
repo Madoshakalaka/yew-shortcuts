@@ -1,4 +1,3 @@
-use roxmltree::Document;
 use std::collections::BTreeMap;
 use std::fs;
 use std::io::Write;
@@ -9,10 +8,6 @@ use walkdir::WalkDir;
 struct IconData {
     name: String,
     category: String,
-    view_box: String,
-    path_data: String,
-    comment: String,
-    file_path: String,
 }
 
 fn snake_case_to_upper(s: &str) -> String {
@@ -25,68 +20,28 @@ fn snake_case_to_upper(s: &str) -> String {
 }
 
 fn process_svg_file(path: &Path) -> Result<IconData, Box<dyn std::error::Error>> {
-    let content = fs::read_to_string(path)?;
-    
-    // Extract the comment (it's between <!-- and -->)
-    let comment = if let Some(start) = content.find("<!--") {
-        if let Some(end) = content.find("-->") {
-            content[start + 4..end].trim().to_string()
-        } else {
-            String::new()
-        }
-    } else {
-        String::new()
-    };
-    
-    let doc = Document::parse(&content)?;
-    
-    let root = doc.root_element();
-    let svg = root
-        .descendants()
-        .find(|n| n.tag_name().name() == "svg")
-        .ok_or("No SVG element found")?;
-    
-    let view_box = svg
-        .attribute("viewBox")
-        .ok_or("No viewBox attribute")?
-        .to_string();
-    
-    let path_elem = svg
-        .descendants()
-        .find(|n| n.tag_name().name() == "path")
-        .ok_or("No path element found")?;
-    
-    let path_data = path_elem
-        .attribute("d")
-        .ok_or("No d attribute in path")?
-        .to_string();
-    
     let file_name = path
         .file_stem()
         .ok_or("No file stem")?
         .to_str()
         .ok_or("Invalid UTF-8 in filename")?;
-    
+
     let category = path
         .parent()
         .and_then(|p| p.file_name())
         .and_then(|n| n.to_str())
         .ok_or("Cannot determine category")?;
-    
+
     let name = match category {
         "solid" => format!("SOLID_{}", snake_case_to_upper(file_name)),
         "regular" => format!("REGULAR_{}", snake_case_to_upper(file_name)),
         "brands" => format!("BRAND_{}", snake_case_to_upper(file_name)),
         _ => snake_case_to_upper(file_name),
     };
-    
+
     Ok(IconData {
         name,
         category: category.to_string(),
-        view_box,
-        path_data,
-        comment,
-        file_path: path.display().to_string(),
     })
 }
 

@@ -163,7 +163,7 @@ fn generate_icons_markdown(cropped_icons: &[IconData]) -> String {
                 height
             ));
         }
-        output.push_str("\n");
+        output.push('\n');
     }
     
     output
@@ -180,7 +180,7 @@ fn generate_rust_module(
     output.push_str("// This file is auto-generated. Do not edit manually.\n\n");
     
     // Add the shared license constant
-    output.push_str(&format!("/// FontAwesome license comment shared by all icons\n"));
+    output.push_str("/// FontAwesome license comment shared by all icons\n");
     output.push_str(&format!("pub const FONTAWESOME_LICENSE: &str = r#\"{}\"#;\n\n", license));
     
     // CroppedIcon struct for cropped icons
@@ -252,25 +252,23 @@ fn generate_rust_module(
             
             output.push_str(&format!("    /// {} icon\n", icon_name));
             
-            if full_icon.is_some() {
-                // Generate Icon with both cropped and full
+            if let Some(fi) = full_icon {
                 output.push_str(&format!("    pub const {}: &Icon = &Icon {{\n", icon_name));
-                output.push_str(&format!("        cropped: CroppedIcon {{\n"));
+                output.push_str("        cropped: CroppedIcon {\n");
                 output.push_str(&format!("            view_box: \"{}\",\n", icon.view_box));
                 output.push_str(&format!("            d: r#\"{}\"#,\n", icon.path_data));
-                output.push_str(&format!("        }},\n"));
-                output.push_str(&format!("        #[cfg(feature = \"full-svg\")]\n"));
-                output.push_str(&format!("        full: FullIcon {{\n"));
-                output.push_str(&format!("            d: r#\"{}\"#,\n", full_icon.unwrap().path_data));
-                output.push_str(&format!("        }},\n"));
+                output.push_str("        },\n");
+                output.push_str("        #[cfg(feature = \"full-svg\")]\n");
+                output.push_str("        full: FullIcon {\n");
+                output.push_str(&format!("            d: r#\"{}\"#,\n", fi.path_data));
+                output.push_str("        },\n");
                 output.push_str("    };\n\n");
             } else {
-                // Generate Icon with only cropped (shouldn't happen if icons match)
                 output.push_str(&format!("    pub const {}: &Icon = &Icon {{\n", icon_name));
-                output.push_str(&format!("        cropped: CroppedIcon {{\n"));
+                output.push_str("        cropped: CroppedIcon {\n");
                 output.push_str(&format!("            view_box: \"{}\",\n", icon.view_box));
                 output.push_str(&format!("            d: r#\"{}\"#,\n", icon.path_data));
-                output.push_str(&format!("        }},\n"));
+                output.push_str("        },\n");
                 output.push_str("    };\n\n");
             }
         }

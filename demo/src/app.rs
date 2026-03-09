@@ -89,7 +89,7 @@ pub fn App() -> Html {
         .cloned()
         .collect();
 
-    let total_pages = (filtered_icons.len() + ICONS_PER_PAGE - 1) / ICONS_PER_PAGE;
+    let total_pages = filtered_icons.len().div_ceil(ICONS_PER_PAGE);
     let current_page_num = *current_page;
 
     // Get icons for current page
@@ -492,7 +492,7 @@ pub fn App() -> Html {
 
                                 html! {
                                     <button
-                                        class={classes!("category-tab", is_active.then(|| "active"))}
+                                        class={classes!("category-tab", is_active.then_some("active"))}
                                         {onclick}
                                     >
                                         {format!("{} ({})", category.name(), category.count())}
@@ -659,7 +659,6 @@ pub fn App() -> Html {
                             <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
-                                    let total_pages = total_pages;
                                     Callback::from(move |_| {
                                         if current_page_num < total_pages - 1 {
                                             on_page_change.emit(current_page_num + 1)
@@ -673,7 +672,6 @@ pub fn App() -> Html {
                             <button
                                 onclick={
                                     let on_page_change = on_page_change.clone();
-                                    let total_pages = total_pages;
                                     Callback::from(move |_| on_page_change.emit(total_pages - 1))
                                 }
                                 disabled={current_page_num >= total_pages - 1}
