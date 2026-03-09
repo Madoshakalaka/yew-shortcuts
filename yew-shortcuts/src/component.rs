@@ -26,6 +26,18 @@ pub struct FontAwesomeSvgProps {
     /// Optional onclick handler
     #[prop_or_default]
     pub onclick: Option<Callback<MouseEvent>>,
+
+    #[prop_or_default]
+    pub x: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub y: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub width: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub height: Option<AttrValue>,
 }
 
 /// FontAwesome SVG component for rendering icons
@@ -43,6 +55,10 @@ pub fn FontAwesomeSvg(props: &FontAwesomeSvgProps) -> Html {
                 class={props.classes.clone()}
                 style={props.style.clone()}
                 onclick={props.onclick.clone()}
+                x={props.x.clone()}
+                y={props.y.clone()}
+                width={props.width.clone()}
+                height={props.height.clone()}
                 data-fa-license={FONTAWESOME_LICENSE}
             >
                 <path fill="currentColor" d={path_d} onclick={props.onclick.clone()} />
@@ -65,6 +81,10 @@ pub fn FontAwesomeSvg(props: &FontAwesomeSvgProps) -> Html {
                 class={props.classes.clone()}
                 style={props.style.clone()}
                 onclick={props.onclick.clone()}
+                x={props.x.clone()}
+                y={props.y.clone()}
+                width={props.width.clone()}
+                height={props.height.clone()}
                 data-fa-license={FONTAWESOME_LICENSE}
             >
                 <path fill="currentColor" d={path_d} onclick={props.onclick.clone()} />
