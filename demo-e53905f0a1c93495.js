@@ -239,16 +239,16 @@ if (!('encodeInto' in cachedTextEncoder)) {
 
 let WASM_VECTOR_LEN = 0;
 
-function wasm_bindgen__convert__closures________invoke__h42207e7e3dc9f88e(arg0, arg1, arg2) {
-    wasm.wasm_bindgen__convert__closures________invoke__h42207e7e3dc9f88e(arg0, arg1, arg2);
-}
-
 function wasm_bindgen__convert__closures_____invoke__hbad465b4a9803977(arg0, arg1) {
     wasm.wasm_bindgen__convert__closures_____invoke__hbad465b4a9803977(arg0, arg1);
 }
 
 function wasm_bindgen__convert__closures_____invoke__h5e60800df1f9091a(arg0, arg1, arg2) {
     wasm.wasm_bindgen__convert__closures_____invoke__h5e60800df1f9091a(arg0, arg1, arg2);
+}
+
+function wasm_bindgen__convert__closures________invoke__h42207e7e3dc9f88e(arg0, arg1, arg2) {
+    wasm.wasm_bindgen__convert__closures________invoke__h42207e7e3dc9f88e(arg0, arg1, arg2);
 }
 
 const EXPECTED_RESPONSE_TYPES = new Set(['basic', 'cors', 'default']);
