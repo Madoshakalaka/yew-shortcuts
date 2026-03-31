@@ -8,28 +8,40 @@ use crate::types::{SearchIconInfo, SearchIconsParams, SearchIconsResult, IconInf
 pub fn search_icons(index: &IconIndex, params: SearchIconsParams) -> Result<SearchIconsResult> {
     let matcher = SkimMatcherV2::default();
     let query = params.query.to_lowercase();
+    let words: Vec<&str> = query.split_whitespace().collect();
+    let hyphenated_query = query.replace(' ', "-");
 
-    // Score and filter icons
     let mut scored_icons: Vec<(i64, &IconInfo)> = index
         .icons
         .iter()
         .filter_map(|icon| {
-            // Apply category filter if specified
             if let Some(ref category) = params.category {
                 if icon.category != *category {
                     return None;
                 }
             }
 
-            // Try exact match first
-            if icon.name.contains(&query) {
-                // Boost score for exact substring matches
-                return Some((1000 + (100 - icon.name.len() as i64), icon));
+            let len_bonus = 100 - icon.name.len() as i64;
+
+            if icon.name.contains(&hyphenated_query) {
+                return Some((2000 + len_bonus, icon));
             }
 
-            // Then try fuzzy matching
-            if let Some(score) = matcher.fuzzy_match(&icon.name, &query) {
-                Some((score, icon))
+            let mut total_score: i64 = 0;
+            let mut matched_any = false;
+
+            for word in &words {
+                if icon.name.contains(word) {
+                    total_score += 500 + len_bonus;
+                    matched_any = true;
+                } else if let Some(score) = matcher.fuzzy_match(&icon.name, word) {
+                    total_score += score;
+                    matched_any = true;
+                }
+            }
+
+            if matched_any {
+                Some((total_score, icon))
             } else {
                 None
             }
